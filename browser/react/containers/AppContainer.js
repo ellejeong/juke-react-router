@@ -25,6 +25,7 @@ export default class AppContainer extends Component {
     this.prev = this.prev.bind(this);
     this.selectAlbum = this.selectAlbum.bind(this);
     this.deselectAlbum = this.deselectAlbum.bind(this);
+    this.selectArtist = this.selectArtist.bind(this);
   }
 
   componentDidMount () {
@@ -114,6 +115,26 @@ export default class AppContainer extends Component {
     this.setState({ selectedAlbum: {}});
   }
 
+    selectArtist (artistId) {
+    axios.get(`/api/artists/${artistId}`)
+      .then(res => res.data)
+      .then(artist => this.setState({
+        selectedArtist: artist
+      }));
+
+    axios.get(`/api/artists/${artistId}/albums`)
+      .then(res => res.data)
+      .then(artistAlbums => this.setState({
+        selectedArtistAlbums: artistAlbums
+      }));
+
+    axios.get(`/api/artists/${artistId}/songs`)
+      .then(res => res.data)
+      .then(artistSongs => this.setState({
+        selectedArtistSongs: artistSongs
+      }));
+  }
+
 
 // child element will be either the albums component or album import React from 'react'
 // so the props object that we pass to it will need to contain all the props for both components.
@@ -139,10 +160,16 @@ export default class AppContainer extends Component {
 
                     // Albums (plural) commponent's props
                     albums: this.state.albums,
-                    // this select.Album is a method, and this.state.selectedAlbum is the chosen album
+                    // this selectAlbum is a method, and this.state.selectedAlbum is the chosen album
                     selectAlbum: this.selectAlbum,
+                    
                     artists: this.state.artists,
-                    artist: this.state.artist
+                    artist: this.state.artist,
+                    // this selectArtist is a method, and this.state.selectedArtist is the chosen artist
+                    selectArtist: this.selectArtist,
+                    selectedArtist: this.state.selectedArtist,
+                    selectedArtistAlbums: this.state.selectedArtistAlbums,
+                    selectedArtistSongs: this.state.selectedArtistSongs
                 })
                 :null
         } 
